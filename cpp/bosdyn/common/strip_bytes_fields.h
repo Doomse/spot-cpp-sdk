@@ -27,7 +27,7 @@ namespace strip_messages {
  * which will remove large fields that should not be added in the grpc logs or copied
  * requests in a response header.
  */
-extern std::map<std::string, bool (&)(google::protobuf::Message*)> kWhitelistedBytesFieldsMap;
+extern std::map<std::string_view, bool (&)(google::protobuf::Message*)> kWhitelistedBytesFieldsMap;
 
 /**
  * Message-specific helper functions that perform a dynamic cast to convert the

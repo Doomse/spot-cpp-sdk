@@ -163,7 +163,7 @@ class RequestStreamCall : public MessagePumpCallBase {
     void Start(std::vector<Request>&& requests, const ::bosdyn::api::RequestHeader& header,
                const RequestStreamRpcCallFunction& rpc_call,
                const RequestStreamCallbackFunction& callback,
-               std::promise<Result<PromiseResultType>> promise, const std::string& type_name) {
+               std::promise<Result<PromiseResultType>> promise, const std::string_view type_name) {
         std::lock_guard<std::mutex> lock(m_call_mutex);
         // This method should not be called with an empty list of requests.
         BOSDYN_ASSERT_PRECONDITION(!requests.empty(), "Request cannot be empty.");
@@ -443,7 +443,7 @@ class RequestResponseStreamCall : public MessagePumpCallBase {
     void Start(std::vector<Request>&& requests, const ::bosdyn::api::RequestHeader& header,
                const RequestResponseStreamRpcCallFunction& rpc_call,
                const RequestResponseStreamCallbackFunction& callback,
-               std::promise<Result<PromiseResultType>> promise, const std::string& type_name) {
+               std::promise<Result<PromiseResultType>> promise, const std::string_view type_name) {
         std::lock_guard<std::mutex> lock(m_call_mutex);
         // This method should not be called with an empty list of requests.
         BOSDYN_ASSERT_PRECONDITION(!requests.empty(), "Request cannot be empty.");

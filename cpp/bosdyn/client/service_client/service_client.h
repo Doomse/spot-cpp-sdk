@@ -140,7 +140,7 @@ class ServiceClient {
         std::promise<Result<PromiseResultType>> result_promise, const RPCParameters& parameters) {
         BOSDYN_ASSERT_PRECONDITION(m_message_pump != nullptr,
                                    "Message pump cannot be null for request type %s",
-                                   Request::GetDescriptor()->full_name().c_str());
+                                   Request::GetDescriptor()->full_name().data());
 
         // The one_time pointer is deleted by MessagePump::Update after the callback function
         // returns

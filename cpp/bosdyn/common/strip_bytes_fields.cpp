@@ -18,7 +18,7 @@ namespace common {
 
 namespace strip_messages {
 
-std::map<std::string, bool (&)(google::protobuf::Message*)> kWhitelistedBytesFieldsMap = {
+std::map<std::string_view, bool (&)(google::protobuf::Message*)> kWhitelistedBytesFieldsMap = {
     {"bosdyn.api.GetImageResponse", StripGetImageResponse},
     {"bosdyn.api.GetLocalGridsResponse", StripLocalGridResponse},
     {"bosdyn.api.GetPointCloudResponse", StripPointCloudResponse},
