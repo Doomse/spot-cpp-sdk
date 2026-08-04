@@ -5,10 +5,10 @@
 list(APPEND CMAKE_PREFIX_PATH @DEP_INSTALL_PATH@)
 # Make sure the dependencies are available first
 include(CMakeFindDependencyMacro)
-find_dependency(Protobuf CONFIG REQUIRED)
-find_dependency(Eigen3 CONFIG REQUIRED)
-find_dependency(gRPC CONFIG REQUIRED)
-find_dependency(CLI11 CONFIG REQUIRED)
+find_dependency(Protobuf REQUIRED)
+find_dependency(Eigen3 REQUIRED)
+find_dependency(gRPC REQUIRED)
+find_dependency(CLI11 REQUIRED)
 find_dependency(Threads REQUIRED)
 # Pick up the auto-generated file which knows how to add the library targets
 # This will mean that we do not have to supply full paths for the libraries
