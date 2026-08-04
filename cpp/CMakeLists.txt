@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.10.2)
 project (bosdyn VERSION 5.1.1)
 
 # Dependencies:
-find_package(protobuf REQUIRED)
+find_package(Protobuf REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(gRPC REQUIRED)
 find_package(CLI11 REQUIRED)
