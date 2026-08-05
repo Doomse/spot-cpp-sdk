@@ -8,6 +8,20 @@ Development Kit License (20191101-BDSDK-SL).
 
 # Spot C++ SDK Release Notes
 
+## Spot C++ SDK version 5.1.9 BETA
+
+### Bug Fixes and Improvements
+
+#### API
+
+Please see the [General Release Notes](https://dev.bostondynamics.com/docs/release_notes) for a description of the API changes included in release 5.1.9.
+
+#### SDK
+
+**Clients**
+
+- Added [IREnableDisableClient](../cpp/bosdyn/client/ir_enable_disable/ir_enable_disable_client.cpp) to support sending `IREnableDisable` requests to the robot. This client may be used to enable or disable infrared (IR) illumination, for use at waypoints near IR-sensitive equipment. Because disabling IR degrades perception, this setting should be applied only to the specific areas where it is needed.
+
 ## Spot C++ SDK version 5.1.4 BETA
 
 - No changes from 5.1.1
