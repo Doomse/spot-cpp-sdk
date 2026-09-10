@@ -705,8 +705,14 @@ double Dist3d(const ::bosdyn::api::SE3Pose& A_T_B, const ::bosdyn::api::SE3Pose&
 }
 
 ::bosdyn::api::Quaternion Normalize(const ::bosdyn::api::Quaternion& q) {
-    double len = sqrt(sqr(q.x()) + sqr(q.y()) + sqr(q.z()) + sqr(q.w()));
-    return (1.0 / len) * q;
+    double len_sq = sqr(q.x()) + sqr(q.y()) + sqr(q.z()) + sqr(q.w());
+    if (len_sq > 0.0) {
+        return (1.0 / sqrt(len_sq)) * q;
+    }
+    // Zero-length quaternion — return identity.
+    ::bosdyn::api::Quaternion identity;
+    identity.set_w(1.0);
+    return identity;
 }
 
 bool IsIdentity(const ::bosdyn::api::SE3Pose& pose) {

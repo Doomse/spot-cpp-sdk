@@ -35,6 +35,10 @@
 #    define BOSDYN_ASSERT_PRECONDITION(cond, ...)                                                \
         (!(cond) ? bosdyn::common::panic(__FUNCTION__, __FILE__, __LINE__, #cond, ##__VA_ARGS__) \
                  : (void)0)
+
+#    define BOSDYN_PANIC(...) \
+        bosdyn::common::panic(__FUNCTION__, __FILE__, __LINE__, "", ##__VA_ARGS__)
+
 #endif
 
 namespace bosdyn {

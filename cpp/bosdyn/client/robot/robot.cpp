@@ -8,6 +8,8 @@
 
 
 #include "robot.h"
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include "bosdyn/client/auth/auth_client.h"
 #include "bosdyn/client/directory/directory_client.h"

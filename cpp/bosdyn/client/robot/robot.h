@@ -10,9 +10,11 @@
 #pragma once
 
 #include <bosdyn/api/geometry.pb.h>
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
+#include <thread>
 #include "bosdyn/client/directory/directory_client.h"
 #include "bosdyn/client/error_callback/error_callback_result.h"
 #include "bosdyn/client/error_codes/client_creation_error_code.h"
@@ -23,6 +25,8 @@
 #include "bosdyn/client/service_client/message_pump.h"
 #include "bosdyn/client/service_client/service_client.h"
 #include "bosdyn/client/time_sync/time_sync_helpers.h"
+#include "bosdyn/client/util/periodic_thread_helper.h"
+#include "bosdyn/common/textlog/textlog.h"
 #include "token_cache.h"
 #include "token_manager.h"
 

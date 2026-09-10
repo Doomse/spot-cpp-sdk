@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #    include <io.h>
 #    define open _open
 #    define close(a) _close(a)
@@ -119,10 +119,10 @@ std::error_code ParseMessageFromFileWithError(const std::string& filename,
         ;
         options.update_access_time = false;
     }
-#ifdef IS_LINUX
+#ifndef _WIN32
     if (options.update_access_time) {
         // Update access time but not modification time.
-        timespec times[2] = {UTIME_NOW, UTIME_OMIT};
+        timespec times[2] = {{0, UTIME_NOW}, {0, UTIME_OMIT}};
         futimens(fd.fd(), times);  // Don't bother with error checking on this one.
     }
 #endif

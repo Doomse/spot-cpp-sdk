@@ -20,6 +20,9 @@ namespace bosdyn {
 
 namespace client {
 
+// Recursion limit applied to protobuf deserialization of chunked messages.
+constexpr int kChunkedMessageParserRecursionLimit = 500;
+
 /**
  * Create a std::string from a vector of data chunks.
  *
@@ -44,10 +47,13 @@ Result<T> MessageFromDataChunks(const std::vector<const ::bosdyn::api::DataChunk
         return {result.status, {}};
     }
 
+    // Some of our more complex protobuf messages exceed the protobuf parser's default recursion
+    // limit of 100. To accommodate this, we create a zero copy stream and coded input stream from
+    // from the response and set a higher recursion limit on the stream before parsing.
     google::protobuf::io::ArrayInputStream array_input(result.response.data(),
                                                        result.response.size());
     google::protobuf::io::CodedInputStream coded_input(&array_input);
-    coded_input.SetRecursionLimit(500);
+    coded_input.SetRecursionLimit(kChunkedMessageParserRecursionLimit);
     T output;
     if (!output.ParseFromCodedStream(&coded_input)) {
         return {::bosdyn::common::Status(SDKErrorCode::GenericSDKError,
