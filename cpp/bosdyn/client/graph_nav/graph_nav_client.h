@@ -13,6 +13,7 @@
 #include <bosdyn/api/graph_nav/graph_nav_service.pb.h>
 
 #include <future>
+#include <utility>
 
 #include "bosdyn/client/graph_nav/graph_nav_error_codes.h"
 #include "bosdyn/client/service_client/service_client.h"
@@ -30,6 +31,9 @@ typedef Result<::bosdyn::api::graph_nav::NavigateRouteResponse> NavigateRouteRes
 
 // Return type for the NavigateTo method.
 typedef Result<::bosdyn::api::graph_nav::NavigateToResponse> NavigateToResultType;
+
+// Return type for the NavigateToAnchor method.
+typedef Result<::bosdyn::api::graph_nav::NavigateToAnchorResponse> NavigateToAnchorResultType;
 
 // Return type for the NavigationFeedback method.
 typedef Result<::bosdyn::api::graph_nav::NavigationFeedbackResponse> NavigationFeedbackResultType;
@@ -101,6 +105,16 @@ class GraphNavClient : public ServiceClient {
     NavigateToResultType NavigateTo(::bosdyn::api::graph_nav::NavigateToRequest& request,
                                     const RPCParameters& parameters = RPCParameters());
 
+    // Asynchronous method to execute a NavigateToAnchor request.
+    std::shared_future<NavigateToAnchorResultType> NavigateToAnchorAsync(
+        ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request,
+        const RPCParameters& parameters = RPCParameters());
+
+    // Synchronous method to execute a NavigateToAnchor request.
+    NavigateToAnchorResultType NavigateToAnchor(
+        ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request,
+        const RPCParameters& parameters = RPCParameters());
+
     // Asynchronous method to execute a NavigationFeedback request.
     std::shared_future<NavigationFeedbackResultType> NavigationFeedbackAsync(
         unsigned int command_id, const RPCParameters& parameters = RPCParameters());
@@ -133,6 +147,7 @@ class GraphNavClient : public ServiceClient {
     // Synchronous method to execute a DownloadGraph request.
     DownloadGraphResultType DownloadGraph(const RPCParameters& parameters = RPCParameters());
 
+
     // Asynchronous method to execute a UploadGraph request.
     std::shared_future<UploadGraphResultType> UploadGraphAsync(
         ::bosdyn::api::graph_nav::UploadGraphRequest& request,
@@ -149,6 +164,7 @@ class GraphNavClient : public ServiceClient {
     // Synchronous method to execute a DownloadGraph request using the streaming method.
     DownloadGraphResultType DownloadGraphStreaming(
         const RPCParameters& parameters = RPCParameters());
+
 
     // Asynchronous method to execute a UploadGraph request using the streaming method.
     std::shared_future<UploadGraphResultType> UploadGraphStreamingAsync(
@@ -255,6 +271,12 @@ class GraphNavClient : public ServiceClient {
     // directory.
     static std::string GetServiceType() { return s_service_type; }
 
+ protected:
+    // Set the stub for the GraphNav client. Used for testing with a mock stub.
+    void setStub(std::unique_ptr<::bosdyn::api::graph_nav::GraphNavService::StubInterface> stub) {
+        m_stub = std::move(stub);
+    }
+
  private:
     // The stub for the GraphNav client to communicate it's rpc with (and pass to the robot).
     std::unique_ptr<::bosdyn::api::graph_nav::GraphNavService::StubInterface> m_stub;
@@ -291,6 +313,13 @@ class GraphNavClient : public ServiceClient {
                               ::bosdyn::api::graph_nav::NavigateToResponse&& response,
                               const grpc::Status& status,
                               std::promise<NavigateToResultType> promise);
+
+    // Callback that will return the NavigateToAnchorResponse message after NavigateToAnchor rpc
+    // returns to the client.
+    void OnNavigateToAnchorComplete(
+        MessagePumpCallBase* call, const ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request,
+        ::bosdyn::api::graph_nav::NavigateToAnchorResponse&& response, const grpc::Status& status,
+        std::promise<NavigateToAnchorResultType> promise);
 
     // Callback that will return the NavigationFeedbackResponse message after NavigationFeedback rpc
     // returns to the client.

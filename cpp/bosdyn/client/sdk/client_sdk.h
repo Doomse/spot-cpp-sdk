@@ -87,6 +87,7 @@ class ClientSdk {
 std::unique_ptr<ClientSdk> CreateStandardSDK(const std::string& client_name);
 
 
+
 }  // namespace client
 
 }  // namespace bosdyn

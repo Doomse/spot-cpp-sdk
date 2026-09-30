@@ -8,6 +8,48 @@ Development Kit License (20191101-BDSDK-SL).
 
 # Spot C++ SDK Release Notes
 
+## Spot C++ SDK version 5.2.0 BETA
+
+### Bug Fixes and Improvements
+
+#### API
+
+Please see the [General Release Notes](https://dev.bostondynamics.com/docs/release_notes) for a description of the API changes included in release 5.2.0.
+
+#### SDK
+
+**Clients**
+
+- Added `NavigateToAnchor` and `NavigateToAnchorAsync` methods to [GraphNavClient](../cpp/bosdyn/client/graph_nav/graph_nav_client.cpp). These methods command the robot to navigate to a goal expressed as a pose in the seed frame of the anchoring, rather than to a specific waypoint.
+
+**Helper Functions**
+
+- `Normalize(const ::bosdyn::api::Quaternion&)` in [proto_math.cpp](../cpp/bosdyn/math/proto_math.cpp) no longer divides by zero when given a zero-length quaternion. It now returns the identity quaternion in that case instead of producing `NaN` or infinite components.
+
+**Miscellaneous**
+
+- Added a minimalistic text logging API in [textlog.h](../cpp/bosdyn/common/textlog/textlog.h). The `TextLog` class writes leveled messages (`kFatal` through `kIgnore`) to `stderr` by default and may be subclassed to route SDK log messages into whatever logging system is used by the integrating codebase. Accompanying macros include `BOSDYN_INFO`, `BOSDYN_WARN`, `BOSDYN_ERROR`, `BOSDYN_FATAL`, `BOSDYN_ASSERT`, `BOSDYN_CHECK_FATAL`, and `BOSDYN_ASSERT_NOT_REACHED`, and attach file and line information to each message.
+
+- Added a `BOSDYN_PANIC` macro to [assert_precondition.h](../cpp/bosdyn/common/assert_precondition.h) for reporting an unconditional failure, complementing the existing `BOSDYN_ASSERT_PRECONDITION` macro.
+
+**Windows Compatibility**
+
+- [proto_file.cpp](../cpp/bosdyn/common/proto_file.cpp) now checks the standard `_WIN32` macro rather than `WIN32` when selecting the Windows file I/O implementation, so the correct implementation is chosen under MSVC. The `futimens` access-time update is now compiled on all non-Windows platforms instead of only when `IS_LINUX` was defined, and its `timespec` values are fully brace-initialized to avoid a compiler warning.
+
+## Spot C++ SDK version 5.1.9 BETA
+
+### Bug Fixes and Improvements
+
+#### API
+
+Please see the [General Release Notes](https://dev.bostondynamics.com/docs/release_notes) for a description of the API changes included in release 5.1.9.
+
+#### SDK
+
+**Clients**
+
+- Added [IREnableDisableClient](../cpp/bosdyn/client/ir_enable_disable/ir_enable_disable_client.cpp) to support sending `IREnableDisable` requests to the robot. This client may be used to enable or disable infrared (IR) illumination, for use at waypoints near IR-sensitive equipment. Because disabling IR degrades perception, this setting should be applied only to the specific areas where it is needed.
+
 ## Spot C++ SDK version 5.1.4 BETA
 
 - No changes from 5.1.1

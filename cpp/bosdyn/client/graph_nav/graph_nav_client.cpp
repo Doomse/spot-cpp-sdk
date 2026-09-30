@@ -150,6 +150,53 @@ void GraphNavClient::OnNavigateToComplete(
     promise.set_value({ret_status, std::move(response)});
 }
 
+std::shared_future<NavigateToAnchorResultType> GraphNavClient::NavigateToAnchorAsync(
+    ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request, const RPCParameters& parameters) {
+    std::promise<NavigateToAnchorResultType> response;
+    std::shared_future<NavigateToAnchorResultType> future = response.get_future();
+    BOSDYN_ASSERT_PRECONDITION(m_stub != nullptr, "Stub for service is unset!");
+
+    // Run a lease processor function to attempt to automatically apply the necessary leases to the
+    // request if a lease is not already in the request.
+    auto lease_status = ProcessRequestWithMultipleLeases(&request, m_lease_wallet.get(),
+                                                         {::bosdyn::client::kBodyResource});
+    if (!lease_status) {
+        // Failed to set a lease with the lease wallet. Return early since the request will fail
+        // without a lease.
+        response.set_value({lease_status, {}});
+        return future;
+    }
+
+    MessagePumpCallBase* one_time =
+        InitiateAsyncCall<::bosdyn::api::graph_nav::NavigateToAnchorRequest,
+                          ::bosdyn::api::graph_nav::NavigateToAnchorResponse,
+                          ::bosdyn::api::graph_nav::NavigateToAnchorResponse>(
+            request,
+            std::bind(
+                &::bosdyn::api::graph_nav::GraphNavService::StubInterface::AsyncNavigateToAnchor,
+                m_stub.get(), _1, _2, _3),
+            std::bind(&GraphNavClient::OnNavigateToAnchorComplete, this, _1, _2, _3, _4, _5),
+            std::move(response), parameters);
+
+    return future;
+}
+
+NavigateToAnchorResultType GraphNavClient::NavigateToAnchor(
+    ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request, const RPCParameters& parameters) {
+    return NavigateToAnchorAsync(request, parameters).get();
+}
+
+void GraphNavClient::OnNavigateToAnchorComplete(
+    MessagePumpCallBase* call, const ::bosdyn::api::graph_nav::NavigateToAnchorRequest& request,
+    ::bosdyn::api::graph_nav::NavigateToAnchorResponse&& response, const grpc::Status& status,
+    std::promise<NavigateToAnchorResultType> promise) {
+    ::bosdyn::common::Status ret_status = ProcessResponseWithMultiLeaseAndGetFinalStatus<
+        ::bosdyn::api::graph_nav::NavigateToAnchorResponse>(status, response, response.status(),
+                                                            m_lease_wallet.get());
+
+    promise.set_value({ret_status, std::move(response)});
+}
+
 std::shared_future<NavigationFeedbackResultType> GraphNavClient::NavigationFeedbackAsync(
     const unsigned int command_id, const RPCParameters& parameters) {
     std::promise<NavigationFeedbackResultType> response;
@@ -295,6 +342,7 @@ DownloadGraphResultType GraphNavClient::DownloadGraph(const RPCParameters& param
     return DownloadGraphAsync(parameters).get();
 }
 
+
 void GraphNavClient::OnDownloadGraphComplete(
     MessagePumpCallBase* call, const ::bosdyn::api::graph_nav::DownloadGraphRequest& request,
     ::bosdyn::api::graph_nav::DownloadGraphResponse&& response, const grpc::Status& status,
@@ -330,6 +378,7 @@ std::shared_future<DownloadGraphResultType> GraphNavClient::DownloadGraphStreami
 DownloadGraphResultType GraphNavClient::DownloadGraphStreaming(const RPCParameters& parameters) {
     return DownloadGraphStreamingAsync(parameters).get();
 }
+
 
 // Asynchronous method to execute a UploadGraph request using the streaming method.
 std::shared_future<UploadGraphResultType> GraphNavClient::UploadGraphStreamingAsync(
